@@ -1,5 +1,44 @@
 version: "3.9"
 services:
+  frontend:
+    container_name: bookstore-module-frontend
+    image: bookstore-module-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    restart: on-failure
+    expose:
+      - 3000
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./frontend/public:/frontend/public"
+      - "./frontend/src:/frontend/src"
+    networks:
+      - bookstore
+  
+  backend:
+    container_name: bookstore-module-backend
+    image: bookstore-module-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    restart: on-failure
+    expose:
+      - 3001
+    ports:
+      - "3001:3001"
+    volumes:
+      - bookstore:/storage
+    networks:
+      - bookstore
+    depends_on:
+      - postgres-db
+
   postgres-db:
     image: postgres:14.5-alpine3.16
     container_name: postgres-db
@@ -11,9 +50,16 @@ services:
       - 5432
     ports:
       - "5432:5432"
+    networks:
+      - bookstore
     volumes:
       - postgres_data:/var/lib/postgresql/data/
 
 volumes:
     postgres_data:
+    bookstore:
 
+networks:
+  bookstore:
+    name: bookstore
+    driver: bridge
