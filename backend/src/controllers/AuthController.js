@@ -24,7 +24,12 @@ class AuthController {
         expiresIn: process.env.TOKEN_EXPIRATION,
       });
 
-      return res.status(200).json({ token });
+      return res.status(200).json(
+        {
+          token,
+          user: { id, email, first_name: user.first_name },
+        },
+      );
     } catch (e) {
       return res.status(400).json(
         { errors: ['Dados inválidos'] },
