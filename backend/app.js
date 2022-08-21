@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 
 import './src/database';
 import userRouter from './src/routes/User';
+import authRouter from './src/routes/Auth';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ class App {
 
   routes() {
     this.app.use('/users/', userRouter);
+    this.app.use('/auth/', authRouter);
   }
 }
 
